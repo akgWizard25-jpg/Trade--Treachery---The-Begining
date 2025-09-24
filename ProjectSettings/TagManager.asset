@@ -53,5 +53,8 @@ TagManager:
   - name: Island_item
     uniqueID: 2963649391
     locked: 0
+  - name: Ship
+    uniqueID: 3708273751
+    locked: 0
   m_RenderingLayers:
   - Default
