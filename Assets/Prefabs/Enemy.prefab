@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2199689171066544927}
   m_Layer: 0
-  m_Name: FirePoint
+  m_Name: Right_Cannon_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24,13 +24,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1942286648235784384}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.239, y: -0.139, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0.4005969, w: 0.91625446}
+  m_LocalPosition: {x: 0.23899996, y: 0.14400005, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4961711849824220110}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 47.231}
 --- !u!1 &4898696540043100698
 GameObject:
   m_ObjectHideFlags: 0
@@ -41,7 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6711184907010851613}
   m_Layer: 0
-  m_Name: FirePoint (1)
+  m_Name: Left_Cannon_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -55,13 +55,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4898696540043100698}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.246, y: -0.139, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0.40059492, w: 0.9162553}
+  m_LocalPosition: {x: -0.24599999, y: 0.15100002, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4961711849824220110}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -47.231}
 --- !u!1 &8010628690223460029
 GameObject:
   m_ObjectHideFlags: 0
@@ -234,6 +234,8 @@ MonoBehaviour:
   patrolSpeed: 1.5
   chaseSpeed: 3.5
   detectionRadius: 6
+  fireRange: 3
+  chaseDistanceFromPatrol: 7.5
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
