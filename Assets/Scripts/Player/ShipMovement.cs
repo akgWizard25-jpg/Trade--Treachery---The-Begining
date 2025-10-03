@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem; // Required for new Input System
 
@@ -5,16 +6,47 @@ using UnityEngine.InputSystem; // Required for new Input System
 public class ShipMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
-    public float acceleration = 5f;   // Forward/backward thrust
+    [Range(1f,6f)]
+    [SerializeField] float acceleration = 5f;   // Forward/backward thrust
     public float maxSpeed = 10f;      // Maximum ship speed
     public float turnSpeed = 150f;    // How fast the ship turns
     public float waterDrag = 0.98f;   // Resistance from water
 
     private Rigidbody2D rb;
-
     // Input values
     private float moveInput;
     private float turnInput;
+    [Space]
+    [Header("Input")]
+    [SerializeField] Joystick joystick;
+    [SerializeField] bool inverseVerticleMovement = false;
+    [SerializeField] bool useKeyboardInput = false;
+    private Action updateDel;
+
+
+
+
+
+
+
+
+
+
+
+    void Update()
+    {
+        updateDel?.Invoke();
+    }
+
+    void MoveInput()
+    {
+        moveInput =(inverseVerticleMovement)? joystick.Vertical * -1 : joystick.Vertical;
+        turnInput = joystick.Horizontal;
+    }
+
+
+
+
 
     // This will be called by PlayerInput (Send Messages) when Move triggers
     public void OnMove(InputAction.CallbackContext context)
@@ -30,6 +62,12 @@ public class ShipMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         rb.linearDamping = 0f;
         rb.angularDamping = 0f;
+        
+        if (!useKeyboardInput)
+        {
+            updateDel += MoveInput;
+
+        }
     }
 
     private void FixedUpdate()
