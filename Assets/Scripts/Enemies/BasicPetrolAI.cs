@@ -103,6 +103,11 @@ namespace JY
     // ----------------- CHASE STATE -----------------
     public class ChasePlayerState : PetrolAIBase
     {
+        private bool isFireing = false;
+
+
+
+
         public override void EnterState(BasicPetrolAI BAI)
         {
             Debug.Log("Entering Chase State");
@@ -122,9 +127,12 @@ namespace JY
             if (distanceToPlayer <= BAI.fireRadius)
             {
                 // Maintain safe distance (don’t get too close)
-                if (distanceToPlayer > BAI.safeDistanceFromExplosion)
+                if (distanceToPlayer > BAI.safeDistanceFromExplosion && !isFireing)
                 {
                     Debug.Log("💥 Firing cannon at player!");
+                    BAI.shipCannon.SwtichFireMode(true);
+                    isFireing = true;
+
                 }
                 else
                 {
@@ -142,6 +150,11 @@ namespace JY
             if (distanceToPlayer > BAI.lostRange)
             {
                 BAI.SwitchState(BAI.returnToPetrolState);
+                if (isFireing)
+                {
+                    BAI.shipCannon.SwtichFireMode(false);
+                    isFireing = false;
+                }
             }
         }
 
@@ -229,6 +242,7 @@ namespace JY
         [Header("Combat Settings")]
         public float fireRadius = 4f;                // how close to fire
         public float safeDistanceFromExplosion = 2f; // minimum safe distance before firing
+        public Cannon shipCannon;
 
 
         // State instances

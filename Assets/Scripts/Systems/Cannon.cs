@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Cannon : MonoBehaviour
@@ -5,7 +6,7 @@ public class Cannon : MonoBehaviour
     [Header("Setup")]
     public Transform[] leftFirePoints;       // Firepoints on left side
     public Transform[] rightFirePoints;      // Firepoints on right side
-    public GameObject projectilePrefab;      // Cannonball prefab
+    public Projectile projectilePrefab;      // Cannonball prefab
     public LayerMask targetLayer;            // What can be shot (e.g., Player)
 
     [Header("Stats")]
@@ -14,12 +15,31 @@ public class Cannon : MonoBehaviour
 
     private float fireCooldown = 0f;
     private Transform target;
+    private Action updateDel;
+    private float side;
 
-    private void Update()
+    private void Update() => updateDel?.Invoke();
+
+
+
+    public void SwtichFireMode(bool fireModeOn)
+    {
+        if (fireModeOn)
+        {
+            target = _GameAssets.Instance.playerShipTranform;
+            updateDel += FireCoolDownUpdate;
+        }
+        else
+        {
+            updateDel -= FireCoolDownUpdate;
+            target = null;
+        }
+    }
+    void FireCoolDownUpdate()
     {
         fireCooldown -= Time.deltaTime;
 
-        FindTarget();
+        //FindTarget();
 
         if (target != null && fireCooldown <= 0f)
         {
@@ -49,7 +69,7 @@ public class Cannon : MonoBehaviour
         Vector2 toTarget = (target.position - transform.position).normalized;
 
         // Check which side target is on (left or right relative to ship forward)
-        float side = Vector3.Dot(toTarget, -transform.right);
+        side = Vector3.Dot(toTarget, -transform.right);
 
         // LEFT side (target is on left of ship)
         if (side > 0 && leftFirePoints.Length > 0)
@@ -82,14 +102,12 @@ public class Cannon : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, fireRange);
 
-        Gizmos.color = Color.green;
+        Gizmos.color =(side>0)? Color.red:Color.green;
         foreach (Transform fp in leftFirePoints)
             if (fp != null) Gizmos.DrawSphere(fp.position, 0.1f);
 
-        Gizmos.color = Color.blue;
+        Gizmos.color = (side<0)? Color.red:Color.green;
         foreach (Transform fp in rightFirePoints)
             if (fp != null) Gizmos.DrawSphere(fp.position, 0.1f);
     }

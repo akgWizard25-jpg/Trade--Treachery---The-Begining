@@ -13,15 +13,14 @@ public class ShipMovement : MonoBehaviour
     public float waterDrag = 0.98f;   // Resistance from water
 
     private Rigidbody2D rb;
-    // Input values
-    private float moveInput;
-    private float turnInput;
+   
     [Space]
     [Header("Input")]
     [SerializeField] Joystick joystick;
     [SerializeField] bool inverseVerticleMovement = false;
     [SerializeField] bool useKeyboardInput = false;
     private Action updateDel;
+    Vector2 moveVector; // set this from your joystick script
 
 
 
@@ -40,8 +39,7 @@ public class ShipMovement : MonoBehaviour
 
     void MoveInput()
     {
-        moveInput =(inverseVerticleMovement)? joystick.Vertical * -1 : joystick.Vertical;
-        turnInput = joystick.Horizontal;
+        moveVector=new Vector2(joystick.Horizontal, (inverseVerticleMovement) ? joystick.Vertical * -1 : joystick.Vertical);
     }
 
 
@@ -51,10 +49,8 @@ public class ShipMovement : MonoBehaviour
     // This will be called by PlayerInput (Send Messages) when Move triggers
     public void OnMove(InputAction.CallbackContext context)
     {
-        Vector2 v = context.ReadValue<Vector2>();
-        // convention: y = forward/back, x = left/right for turning
-        moveInput = v.y;
-        turnInput = v.x;
+        moveVector = context.ReadValue<Vector2>();
+        if (inverseVerticleMovement) moveVector = new Vector2(moveVector.x, moveVector.y * -1);
     }
 
     private void Awake()
@@ -76,26 +72,27 @@ public class ShipMovement : MonoBehaviour
         ApplyDrag();
     }
 
-       private void HandleMovement()
+    private void HandleMovement()
     {
-        // Apply forward/backward thrust
-        if (Mathf.Abs(moveInput) > 0.01f)
+        // If joystick is being used
+        if (moveVector.magnitude > 0.1f)
         {
-            Vector2 force = transform.up * (moveInput * acceleration);
+            // 1️⃣ Find target angle based on joystick direction
+            float targetAngle = Mathf.Atan2(moveVector.y, moveVector.x) * Mathf.Rad2Deg - 90f;
+
+            // 2️⃣ Smoothly rotate the ship towards joystick direction
+            float newAngle = Mathf.MoveTowardsAngle(rb.rotation, targetAngle, turnSpeed * Time.fixedDeltaTime);
+            rb.MoveRotation(newAngle);
+
+            // 3️⃣ Add forward thrust in facing direction
+            Vector2 force = transform.up * acceleration;
             rb.AddForce(force);
-        }
 
-        // Cap max speed
-        if (rb.linearVelocity.magnitude > maxSpeed)
-        {
-            rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
-        }
-
-        // Apply turning
-        if (Mathf.Abs(turnInput) > 0.01f)
-        {
-            float rotation = -turnInput * turnSpeed * Time.fixedDeltaTime;
-            rb.MoveRotation(rb.rotation + rotation);
+            // 4️⃣ Limit max speed
+            if (rb.linearVelocity.magnitude > maxSpeed)
+            {
+                rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
+            }
         }
     }
 
