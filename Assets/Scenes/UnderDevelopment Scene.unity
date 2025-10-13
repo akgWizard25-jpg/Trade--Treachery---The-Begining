@@ -8716,6 +8716,37 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!1 &582441788
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 582441789}
+  m_Layer: 6
+  m_Name: DamagepopPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &582441789
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 582441788}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1140323935}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &587607816
 GameObject:
   m_ObjectHideFlags: 0
@@ -10522,9 +10553,10 @@ MonoBehaviour:
   dontDestroyOnLoad: 0
   unparentGameObject: 0
   playerShipTranform: {fileID: 1140323935}
-  pfDamagePopup: {fileID: 0}
-  ciriticalHitColor: {r: 0, g: 0, b: 0, a: 0}
-  normalHitColor: {r: 0, g: 0, b: 0, a: 0}
+  pfDamagePopup: {fileID: 5986414993156837998, guid: 1ab0c41850531234596675eb7bcd09f8, type: 3}
+  ciriticalHitColor: {r: 1, g: 0.4198113, b: 0.4198113, a: 1}
+  normalHitColor: {r: 1, g: 0.57236767, b: 0, a: 1}
+  explosionEffect: {fileID: 7315104900583655913, guid: fb4b3e6c49a6a0d45ba43e8a9148e1ad, type: 3}
 --- !u!1 &672860086
 GameObject:
   m_ObjectHideFlags: 0
@@ -11990,6 +12022,7 @@ GameObject:
   - component: {fileID: 1140323932}
   - component: {fileID: 1140323931}
   - component: {fileID: 1140323936}
+  - component: {fileID: 1140323938}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -12058,6 +12091,7 @@ Transform:
   m_Children:
   - {fileID: 70613701}
   - {fileID: 1419251040}
+  - {fileID: 582441789}
   m_Father: {fileID: 367986948}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1140323936
@@ -12143,6 +12177,21 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.66, y: 1.13}
   m_Direction: 0
+--- !u!114 &1140323938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1140323930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1950600d58e2f7643995ec9466ff2548, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthSystem
+  totalHealth: 100
+  showDamagePopup: 1
+  damagePopUpPoint: {fileID: 582441789}
 --- !u!1 &1181401268
 GameObject:
   m_ObjectHideFlags: 0

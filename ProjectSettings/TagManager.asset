@@ -15,7 +15,7 @@ TagManager:
   - Sea_0
   - Sea_1
   - Island
-  - 
+  - Effects
   - 
   - 
   - 
@@ -55,6 +55,9 @@ TagManager:
     locked: 0
   - name: Ship
     uniqueID: 3708273751
+    locked: 0
+  - name: Effects
+    uniqueID: 3092664607
     locked: 0
   m_RenderingLayers:
   - Default

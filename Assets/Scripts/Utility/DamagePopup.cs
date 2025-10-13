@@ -27,7 +27,10 @@ public class DamagePopup : MonoBehaviour
     }
 
     private void Awake() {
-        textmesh=transform. GetComponent<TextMeshPro>();
+        textmesh = transform.GetComponent<TextMeshPro>();
+        var renderer = GetComponent<MeshRenderer>();
+        renderer.sortingLayerName = "Effects"; // create this layer in project if needed
+        renderer.sortingOrder = 10; 
     }
 
     public void Setup(int damageAmount,bool isCritical) 

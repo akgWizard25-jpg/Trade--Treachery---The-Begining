@@ -16,4 +16,5 @@ public class _GameAssets : MonoSingleton<_GameAssets>
     public Transform pfDamagePopup;
     public Color ciriticalHitColor;
     public Color normalHitColor;
+    public GameObject explosionEffect;
 }

@@ -68,6 +68,7 @@ public class Projectile : MonoBehaviour
         if (damageable != null)
         {
             damageable.TakeDamage(damage);
+            Destroy(Instantiate(_GameAssets.Instance.explosionEffect, transform.position, Quaternion.identity),0.35f);
             Destroy(gameObject);
         }
         else if (destroyOnAnyCollision)
