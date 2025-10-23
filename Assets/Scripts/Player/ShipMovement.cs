@@ -12,8 +12,9 @@ public class ShipMovement : MonoBehaviour
     public float turnSpeed = 150f;    // How fast the ship turns
     public float waterDrag = 0.98f;   // Resistance from water
 
+
     private Rigidbody2D rb;
-   
+
     [Space]
     [Header("Input")]
     [SerializeField] Joystick joystick;
@@ -100,4 +101,6 @@ public class ShipMovement : MonoBehaviour
     {
         rb.linearVelocity *= waterDrag;
     }
+
+    
 }
