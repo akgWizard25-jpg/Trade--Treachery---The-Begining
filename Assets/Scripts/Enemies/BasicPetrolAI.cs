@@ -244,6 +244,19 @@ namespace JY
         public float safeDistanceFromExplosion = 2f; // minimum safe distance before firing
         public Cannon shipCannon;
 
+        // --- A* Pathfinding ---
+        private List<PathNode> currentPath;
+        private int currentPathIndex = 0;
+        private float pathUpdateTimer = 0f;
+        [Header("Pathfinding")]
+        public float pathUpdateInterval = 1f;
+
+        // --- Dynamic Avoidance ---
+        [Header("Avoidance")]
+        public float avoidanceRadius = 2.5f;
+        public float avoidanceStrength = 2f;
+        public LayerMask avoidanceMask;
+
 
         // State instances
         [HideInInspector] public PetrolState patrolState = new PetrolState();
@@ -295,15 +308,64 @@ namespace JY
 
         public void MoveAwayFrom(Vector3 target)
         {
-            Vector2 direction = (transform.position - target).normalized;
+            //Vector2 direction = (transform.position - target).normalized;
 
-            // Smooth rotate away from target
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            Quaternion targetRotation = Quaternion.Euler(0, 0, angle);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            //// Smooth rotate away from target
+            //float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            //Quaternion targetRotation = Quaternion.Euler(0, 0, angle);
+            //transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
 
-            // Move away
-            transform.position += transform.right * speed * Time.deltaTime;
+            //// Move away
+            //transform.position += transform.right * speed * Time.deltaTime;
+
+            pathUpdateTimer -= Time.deltaTime;
+
+            // Update path using A* periodically
+            if (pathUpdateTimer <= 0f)
+            {
+                pathUpdateTimer = pathUpdateInterval;
+                currentPath = AStarPathfinder.FindPath(transform.position, target);
+                currentPathIndex = 0;
+            }
+
+            // If no valid path, move directly (fallback)
+            if (currentPath == null || currentPathIndex >= currentPath.Count)
+            {
+                Vector2 dir = (target - transform.position).normalized;
+                float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+                transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, 0, angle), rotationSpeed * Time.deltaTime);
+                transform.position += transform.right * speed * Time.deltaTime;
+                return;
+            }
+
+            // --- A* path movement ---
+            Vector2 pathTarget = GridManager.Instance.GetWorldPosition(currentPath[currentPathIndex].gridPosition);
+            Vector2 moveDir = (pathTarget - (Vector2)transform.position).normalized;
+
+            // --- Dynamic avoidance (avoid nearby ships) ---
+            Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, 2.5f, LayerMask.GetMask("Ships"));
+            Vector2 avoidance = Vector2.zero;
+
+            foreach (var hit in hits)
+            {
+                if (hit.gameObject == gameObject) continue; // skip self
+
+                Vector2 away = (Vector2)transform.position - (Vector2)hit.transform.position;
+                float distance = Mathf.Max(away.magnitude, 0.1f);
+                avoidance += away.normalized / distance; // closer objects push more
+            }
+
+            // Blend A* direction and avoidance
+            Vector2 finalDir = (moveDir + avoidance * 2f).normalized;
+
+            // --- Movement & Rotation ---
+            float moveAngle = Mathf.Atan2(finalDir.y, finalDir.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, 0, moveAngle), rotationSpeed * Time.deltaTime);
+            transform.position += (Vector3)(transform.right * speed * Time.deltaTime);
+
+            // Proceed to next node when close enough
+            if (Vector2.Distance(transform.position, pathTarget) < 0.3f)
+                currentPathIndex++;
         }
 
 
